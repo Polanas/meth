@@ -137,12 +137,74 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
         vec.fields.len()
     );
 
-    let normalize_fns = (vec.vec_type == &VecType::F).then_some(quote! {
-        pub fn normalized(&self) -> Self {
-            *self / self.length()
+    let float_fns = (vec.vec_type == &VecType::F).then_some(quote! {
+        pub fn floor(self) -> Self {
+            Self {
+                #(#fields: self.#fields.floor()),*
+            }
         }
-        pub fn normalize(&mut self) {
-            *self /= self.length()
+        pub fn fract(self) -> Self {
+            self - self.trunc()
+        }
+        pub fn fract_gl(self) -> Self {
+            self - self.floor()
+        }
+        pub fn trunc(self) -> Self {
+            Self {
+                #(#fields: self.#fields.trunc()),*
+            }
+        }
+        pub fn ceil(self) -> Self {
+            Self {
+                #(#fields: self.#fields.ceil()),*
+            }
+        }
+        pub fn round(self) -> Self {
+            Self {
+                #(#fields: self.#fields.round()),*
+            }
+        }
+        pub fn lerp(self, rhs: Self, s: f32) -> Self {
+            self * (1.0 - s) + rhs * s
+        }
+        pub fn normalize(self) -> Self {
+            self / self.length()
+        }
+        pub fn max(self, rhs: Self) -> Self {
+            Self {
+                #(#fields: self.#fields.max(rhs.#fields)),*
+            }
+        }
+        pub fn min(self, rhs: Self) -> Self {
+            Self {
+                #(#fields: self.#fields.min(rhs.#fields)),*
+            }
+        }
+        pub fn clamp(self, min: Self, max: Self) -> Self {
+            Self {
+                #(#fields: self.#fields.clamp(min.#fields, max.#fields)),*
+            }
+        }
+        pub fn move_towards(self, rhs: Self, d: f32) -> Self {
+            let a = rhs - self;
+            let len = a.length();
+            if len <= d || len <= 1e-4 {
+                return rhs;
+            }
+            self + a / len * d
+        }
+        pub fn midpoint(self, rhs: Self) -> Self {
+            (self + rhs) * 0.5
+        }
+        pub fn dot(self, other: Self) -> f32 {
+            #(self.#fields * other.#fields)+*
+        }
+    });
+    let abs_fn = (vec.vec_type != &VecType::U).then_some(quote! {
+        pub fn abs(self) -> Self {
+            Self {
+                #(#fields: self.#fields.abs()),*
+            }
         }
     });
 
@@ -196,13 +258,14 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
                     #(#fields,)*
                 }
             }
-            pub fn length(&self) -> f32 {
+            pub fn length(self) -> f32 {
                 (#((self.#fields as f32) * (self.#fields as f32))+*).sqrt()
             }
-            pub fn length_squared(&self) -> f32 {
+            pub fn length_squared(self) -> f32 {
                 #((self.#fields as f32) * (self.#fields as f32))+*
             }
-            #normalize_fns
+            #float_fns
+            #abs_fn
         }
 
         impl std::ops::Add<#name> for #name {
@@ -359,9 +422,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(code, _)| code)
             .collect_vec();
         let path = format!("src/vec{vec_size}.rs");
-        if Path::new(&path).exists() {
-            return Ok(());
-        }
+        // if Path::new(&path).exists() {
+        //     return Ok(());
+        // }
         let mut file = File::create(path)?;
         file.write_all(quote! {#(#code)*}.to_string().as_bytes())?;
     }

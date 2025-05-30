@@ -1,3 +1,5 @@
+local meth = require("src.lua.meth")
+
 ---@class meth.Vec2
 ---@field x float
 ---@field y float
@@ -17,6 +19,61 @@
 
 ---@class meth.Vec2
 local methods = {
+  ---@param self meth.Vec2
+  ---@param rhs meth.Vec2
+  ---@param s f32
+  lerped = function(self, rhs, s)
+    self[1] = self[1] * (1.0 - s) + rhs[1] * s
+    self[2] = self[2] * (1.0 - s) + rhs[2] * s
+  end,
+	---@param self meth.Vec2
+	fract_gl = function(self)
+		self[1] = meth.fract_gl(self[1])
+		self[2] = meth.fract_gl(self[2])
+	end,
+	---@return meth.Vec2
+	---@param self meth.Vec2
+	fract_gled = function(self)
+		return vec2(meth.fract_gl(self[1]), meth.fract_gl(self[2]))
+	end,
+	fract = function(self)
+		self[1] = meth.fract(self[1])
+		self[2] = meth.fract(self[2])
+	end,
+	---@return meth.Vec2
+	---@param self meth.Vec2
+	fracted = function(self)
+		return vec2(meth.fract(self[1]), meth.fract(self[2]))
+	end,
+	---@param self meth.Vec2
+	round = function(self)
+		self[1] = meth.round(self[1])
+		self[2] = meth.round(self[2])
+	end,
+	---@return meth.Vec2
+	---@param self meth.Vec2
+	rounded = function(self)
+		return vec2(meth.round(self[1]), meth.round(self[2]))
+	end,
+	ceil = function(self)
+		self[1] = math.ceil(self[1])
+		self[2] = math.ceil(self[2])
+	end,
+	---@return meth.Vec2
+	---@param self meth.Vec2
+	ceiled = function(self)
+		return vec2(math.ceil(self[1]), math.ceil(self[2]))
+	end,
+	---@param self meth.Vec2
+	floor = function(self)
+		self[1] = math.floor(self[1])
+		self[2] = math.floor(self[2])
+	end,
+	---@return meth.Vec2
+	---@param self meth.Vec2
+	floored = function(self)
+		return vec2(math.floor(self[1]), math.floor(self[2]))
+	end,
 	---@param self meth.Vec2
 	length = function(self)
 		return math.sqrt(self.x * self.x + self.y * self.y)
