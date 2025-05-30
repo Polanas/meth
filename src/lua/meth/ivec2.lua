@@ -1,28 +1,83 @@
+local meth = require("src.lua.meth")
+
 ---@class meth.IVec2
 ---@field x integer
 ---@field y integer
----@operator add(meth.IVec2): meth.Vec2
+---@operator add(meth.IVec2): meth.IVec2
 ---@operator add(number): meth.IVec2
----@operator sub(meth.IVec2): meth.Vec2
+---@operator sub(meth.IVec2): meth.IVec2
 ---@operator sub(number): meth.IVec2
----@operator mul(meth.IVec2): meth.Vec2
+---@operator mul(meth.IVec2): meth.IVec2
 ---@operator mul(number): meth.IVec2
----@operator div(meth.IVec2): meth.Vec2
+---@operator div(meth.IVec2): meth.IVec2
 ---@operator div(number): meth.IVec2
----@operator mod(meth.IVec2): meth.Vec2
+---@operator mod(meth.IVec2): meth.IVec2
 ---@operator mod(number): meth.IVec2
 ---@operator unm:meth.IVec2
----@operator pow(meth.IVec2): meth.Vec2
+---@operator pow(meth.IVec2): meth.IVec2
 ---@operator pow(number): meth.IVec2
 
 ---@class meth.IVec2
 local methods = {
+	clamp = function(self, min, max)
+		self[1] = meth.clamp(self[1], min[1], max[1])
+		self[2] = meth.clamp(self[2], min[2], max[2])
+		return self
+	end,
+	---@param self meth.IVec2
+	---@param min meth.IVec2
+	---@param max meth.IVec2
+	---@return meth.IVec2
+	clamped = function(self, min, max)
+		return ivec2(meth.clamp(self[1], min[1], max[1]), meth.clamp(self[2], min[2], max[2]))
+	end,
+	---@param self meth.IVec2
+	---@param rhs meth.IVec2
+	---@return meth.IVec2
+	min = function(self, rhs)
+		self[1] = math.min(self[1], rhs[1])
+		self[2] = math.min(self[2], rhs[2])
+		return self
+	end,
+	---@param self meth.IVec2
+	---@param rhs meth.IVec2
+	---@return meth.IVec2
+	mined = function(self, rhs)
+		return ivec2(math.min(self[1], rhs[1]), math.min(self[2], rhs[2]))
+	end,
+	---@param self meth.IVec2
+	---@param rhs meth.IVec2
+	---@return meth.IVec2
+	max = function(self, rhs)
+		self[1] = math.max(self[1], rhs[1])
+		self[2] = math.max(self[2], rhs[2])
+		return self
+	end,
+	---@param self meth.IVec2
+	---@param rhs meth.IVec2
+	---@return meth.IVec2
+	maxed = function(self, rhs)
+		return ivec2(math.max(self[1], rhs[1]), math.max(self[2], rhs[2]))
+	end,
+	---@param self meth.IVec2
+	---@param rhs meth.IVec2
+	---@return meth.IVec2
+	assign_from = function(self, rhs)
+		self[1] = rhs[1]
+		self[2] = rhs[2]
+		return self
+	end,
+	---@param self meth.IVec2
+	---@return meth.IVec2
+	copy = function(self)
+		return ivec2(self[1], self[2])
+	end,
 	---@param self meth.IVec2
 	length = function(self)
 		return math.sqrt(self.x * self.x + self.y * self.y)
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	add = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] + value
@@ -32,8 +87,8 @@ local methods = {
 			self[2] = self[2] + value[2]
 		end
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	sub = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] - value
@@ -43,8 +98,8 @@ local methods = {
 			self[2] = self[2] - value[2]
 		end
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	div = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] / value
@@ -54,8 +109,8 @@ local methods = {
 			self[2] = self[2] / value[2]
 		end
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	mul = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] * value
@@ -65,8 +120,8 @@ local methods = {
 			self[2] = self[2] * value[2]
 		end
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	mod = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] % value
@@ -76,8 +131,8 @@ local methods = {
 			self[2] = self[2] % value[2]
 		end
 	end,
-	---@param self meth.Vec2
-	---@param value number|meth.Vec2
+	---@param self meth.IVec2
+	---@param value number|meth.IVec2
 	pow = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] ^ value
@@ -87,7 +142,7 @@ local methods = {
 			self[2] = self[2] ^ value[2]
 		end
 	end,
-	---@param self meth.Vec2
+	---@param self meth.IVec2
 	neg = function(self)
 		self[1] = -self[1]
 		self[2] = -self[2]

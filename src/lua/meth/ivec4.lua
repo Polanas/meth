@@ -1,24 +1,105 @@
+local meth = require("src.lua.meth")
 ---@class meth.IVec4
 ---@field x integer
 ---@field y integer
 ---@field z integer
 ---@field w integer
----@operator add(meth.IVec4): meth.Vec4
+---@operator add(meth.IVec4): meth.IVec4
 ---@operator add(number): meth.IVec4
----@operator sub(meth.IVec4): meth.Vec4
+---@operator sub(meth.IVec4): meth.IVec4
 ---@operator sub(number): meth.IVec4
----@operator mul(meth.IVec4): meth.Vec4
+---@operator mul(meth.IVec4): meth.IVec4
 ---@operator mul(number): meth.IVec4
----@operator div(meth.IVec4): meth.Vec4
+---@operator div(meth.IVec4): meth.IVec4
 ---@operator div(number): meth.IVec4
----@operator mod(meth.IVec4): meth.Vec4
+---@operator mod(meth.IVec4): meth.IVec4
 ---@operator mod(number): meth.IVec4
 ---@operator unm:meth.IVec4
----@operator pow(meth.IVec4): meth.Vec4
+---@operator pow(meth.IVec4): meth.IVec4
 ---@operator pow(number): meth.IVec4
 
 ---@class meth.IVec4
 local methods = {
+	---@param self meth.IVec4
+	---@param min meth.IVec4
+	---@param max meth.IVec4
+	---@return meth.IVec4
+	clamp = function(self, min, max)
+		self[1] = meth.clamp(self[1], min[1], max[1])
+		self[2] = meth.clamp(self[2], min[2], max[2])
+		self[3] = meth.clamp(self[3], min[3], max[3])
+		self[4] = meth.clamp(self[4], min[4], max[4])
+		return self
+	end,
+	---@param self meth.IVec4
+	---@param min meth.IVec4
+	---@param max meth.IVec4
+	---@return meth.IVec4
+	clamped = function(self, min, max)
+		return ivec4(
+			meth.clamp(self[1], min[1], max[1]),
+			meth.clamp(self[2], min[2], max[2]),
+			meth.clamp(self[3], min[3], max[3]),
+			meth.clamp(self[4], min[4], max[4])
+		)
+	end,
+	---@param self meth.IVec4
+	---@param rhs meth.IVec4
+	---@return meth.IVec4
+	min = function(self, rhs)
+		self[1] = math.min(self[1], rhs[1])
+		self[2] = math.min(self[2], rhs[2])
+		self[3] = math.min(self[3], rhs[3])
+		self[4] = math.min(self[4], rhs[4])
+		return self
+	end,
+	---@param self meth.IVec4
+	---@param rhs meth.IVec4
+	---@return meth.IVec4
+	mined = function(self, rhs)
+		return ivec4(
+			math.min(self[1], rhs[1]),
+			math.min(self[2], rhs[2]),
+			math.min(self[3], rhs[3]),
+			math.min(self[4], rhs[4])
+		)
+	end,
+	---@param self meth.IVec4
+	---@param rhs meth.IVec4
+	---@return meth.IVec4
+	max = function(self, rhs)
+		self[1] = math.max(self[1], rhs[1])
+		self[2] = math.max(self[2], rhs[2])
+		self[3] = math.max(self[3], rhs[3])
+		self[4] = math.max(self[4], rhs[4])
+		return self
+	end,
+	---@param self meth.IVec4
+	---@param rhs meth.IVec4
+	---@return meth.IVec4
+	maxed = function(self, rhs)
+		return ivec4(
+			math.max(self[1], rhs[1]),
+			math.max(self[2], rhs[2]),
+			math.max(self[3], rhs[3]),
+			math.max(self[4], rhs[4])
+		)
+	end,
+	---@param self meth.IVec4
+	---@param rhs meth.IVec4
+	---@return meth.IVec4
+	assign_from = function(self, rhs)
+		self[1] = rhs[1]
+		self[2] = rhs[2]
+		self[3] = rhs[3]
+		self[4] = rhs[4]
+		return self
+	end,
+	---@param self meth.IVec4
+	---@return meth.IVec4
+	copy = function(self)
+		return ivec4(self[1], self[2], self[3], self[4])
+	end,
 	---@param self meth.IVec4
 	length = function(self)
 		return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w)

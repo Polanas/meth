@@ -22,6 +22,13 @@ end
 local fract_gl = function(num)
 	return num - math.floor(num)
 end
+---@param num number
+---@param min number
+---@param max number
+---@return number
+local clamp = function(num, min, max)
+	return math.max(math.min(num, max), min)
+end
 
 ---@class (exact) meth.definitions
 return {
@@ -29,4 +36,5 @@ return {
 	round = round,
 	fract = fract,
 	fract_gl = fract_gl,
+  clamp = clamp
 }

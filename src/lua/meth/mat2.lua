@@ -15,6 +15,7 @@
 local methods = {
 	---@param self meth.Mat2
 	---@param value number|meth.Mat2
+	---@return meth.Mat2
 	add = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] + value
@@ -27,9 +28,11 @@ local methods = {
 			self[3] = self[3] + value[3]
 			self[4] = self[4] + value[4]
 		end
+		return self
 	end,
 	---@param self meth.Mat2
 	---@param value number|meth.Mat2
+	---@return meth.Mat2
 	sub = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] - value
@@ -42,9 +45,11 @@ local methods = {
 			self[3] = self[3] - value[3]
 			self[4] = self[4] - value[4]
 		end
+		return self
 	end,
 	---@param self meth.Mat2
 	---@param value number|meth.Mat2
+	---@return meth.Mat2
 	mul = function(self, value)
 		if type(value) == "number" then
 			self[1] = self[1] * value
@@ -60,6 +65,7 @@ local methods = {
 			self[3] = a * f + b * h
 			self[4] = c * f + d * h
 		end
+		return self
 	end,
 	type = "Mat2",
 }
@@ -167,8 +173,10 @@ local Mat2 = {
 	---@param angle number (in radians)
 	from_angle = function(angle)
 		local sin, cos = math.sin(angle), math.cos(angle)
-		return mat2(cos, sin, -sin, cos)
+		return mat2(cos, -sin, sin, cos)
 	end,
+	ZERO = mat2(),
+	IDENTITY = mat2(1, 0, 0, 1),
 }
 
 return Mat2

@@ -1,3 +1,4 @@
+local meth = require("src.lua.meth")
 ---@class meth.IVec3
 ---@field x float
 ---@field y float
@@ -18,6 +19,71 @@
 
 ---@class meth.IVec3
 local methods = {
+	---@param self meth.IVec3
+	---@param min meth.IVec3
+	---@param max meth.IVec3
+	---@return meth.IVec3
+	clamp = function(self, min, max)
+		self[1] = meth.clamp(self[1], min[1], max[1])
+		self[2] = meth.clamp(self[2], min[2], max[2])
+		self[3] = meth.clamp(self[3], min[3], max[3])
+		return self
+	end,
+	---@param self meth.IVec3
+	---@param min meth.IVec3
+	---@param max meth.IVec3
+	---@return meth.IVec3
+	clamped = function(self, min, max)
+		return ivec3(
+			meth.clamp(self[1], min[1], max[1]),
+			meth.clamp(self[2], min[2], max[2]),
+			meth.clamp(self[3], min[3], max[3])
+		)
+	end,
+	---@param self meth.IVec3
+	---@param rhs meth.IVec3
+	---@return meth.IVec3
+	min = function(self, rhs)
+		self[1] = math.min(self[1], rhs[1])
+		self[2] = math.min(self[2], rhs[2])
+		self[3] = math.min(self[3], rhs[3])
+		return self
+	end,
+	---@param self meth.IVec3
+	---@param rhs meth.IVec3
+	---@return meth.IVec3
+	mined = function(self, rhs)
+		return ivec3(math.min(self[1], rhs[1]), math.min(self[2], rhs[2]), math.min(self[3], rhs[3]))
+	end,
+	---@param self meth.IVec3
+	---@param rhs meth.IVec3
+	---@return meth.IVec3
+	max = function(self, rhs)
+		self[1] = math.max(self[1], rhs[1])
+		self[2] = math.max(self[2], rhs[2])
+		self[3] = math.max(self[3], rhs[3])
+		return self
+	end,
+	---@param self meth.IVec3
+	---@param rhs meth.IVec3
+	---@return meth.IVec3
+	maxed = function(self, rhs)
+		return ivec3(math.max(self[1], rhs[1]), math.max(self[2], rhs[2]), math.max(self[3], rhs[3]))
+	end,
+	---@param self meth.IVec3
+	---@param rhs meth.IVec3
+	---@return meth.IVec3
+	assign_from = function(self, rhs)
+		self[1] = rhs[1]
+		self[2] = rhs[2]
+		self[3] = rhs[3]
+		return self
+	end,
+	---@param self meth.IVec3
+	---@return meth.IVec3
+	copy = function(self)
+		return ivec3(self[1], self[2], self[3])
+	end,
 	---@param self meth.IVec3
 	length = function(self)
 		return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)

@@ -250,10 +250,10 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
 
         impl #name {
             #(#conversions)*
-            pub fn splat(value: #type_ident) -> Self {
+            pub const fn splat(value: #type_ident) -> Self {
                 Self {#(#fields: value,)*}
             }
-            pub fn new(#(#fields: #type_ident,)*) -> Self {
+            pub const fn new(#(#fields: #type_ident,)*) -> Self {
                 Self {
                     #(#fields,)*
                 }
@@ -422,9 +422,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(code, _)| code)
             .collect_vec();
         let path = format!("src/vec{vec_size}.rs");
-        // if Path::new(&path).exists() {
-        //     return Ok(());
-        // }
+        if Path::new(&path).exists() {
+            return Ok(());
+        }
         let mut file = File::create(path)?;
         file.write_all(quote! {#(#code)*}.to_string().as_bytes())?;
     }
