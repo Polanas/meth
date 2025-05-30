@@ -87,6 +87,12 @@ local methods = {
 			self[2] = self[2] ^ value[2]
 		end
 	end,
+	---@param self meth.Vec2
+	neg = function(self)
+		self[1] = -self[1]
+		self[2] = -self[2]
+	end,
+	type = "IVec2",
 }
 ---@type metatable
 local metatable = {
@@ -109,61 +115,61 @@ local metatable = {
 	end,
 	__add = function(a, b)
 		if type(a) == "number" then
-			return vec2(a + b[1], a + b[2])
+			return ivec2(a + b[1], a + b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] + b, a[2] + b)
+			return ivec2(a[1] + b, a[2] + b)
 		else
-			return vec2(a[1] + b[1], a[2] + b[2])
+			return ivec2(a[1] + b[1], a[2] + b[2])
 		end
 	end,
 	__sub = function(a, b)
 		if type(a) == "number" then
-			return vec2(a - b[1], a - b[2])
+			return ivec2(a - b[1], a - b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] - b, a[2] - b)
+			return ivec2(a[1] - b, a[2] - b)
 		else
-			return vec2(a[1] - b[1], a[2] - b[2])
+			return ivec2(a[1] - b[1], a[2] - b[2])
 		end
 	end,
 
 	__mul = function(a, b)
 		if type(a) == "number" then
-			return vec2(a * b[1], a * b[2])
+			return ivec2(a * b[1], a * b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] * b, a[2] * b)
+			return ivec2(a[1] * b, a[2] * b)
 		else
-			return vec2(a[1] * b[1], a[2] * b[2])
+			return ivec2(a[1] * b[1], a[2] * b[2])
 		end
 	end,
 	__div = function(a, b)
 		if type(a) == "number" then
-			return vec2(a / b[1], a / b[2])
+			return ivec2(a / b[1], a / b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] / b, a[2] / b)
+			return ivec2(a[1] / b, a[2] / b)
 		else
-			return vec2(a[1] / b[1], a[2] / b[2])
+			return ivec2(a[1] / b[1], a[2] / b[2])
 		end
 	end,
 
 	__mod = function(a, b)
 		if type(a) == "number" then
-			return vec2(a % b[1], a % b[2])
+			return ivec2(a % b[1], a % b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] % b, a[2] % b)
+			return ivec2(a[1] % b, a[2] % b)
 		else
-			return vec2(a[1] % b[1], a[2] % b[2])
+			return ivec2(a[1] % b[1], a[2] % b[2])
 		end
 	end,
 	__unm = function(a)
-		return vec2(-a[1], -a[2])
+		return ivec2(-a[1], -a[2])
 	end,
 	__pow = function(a, b)
 		if type(a) == "number" then
-			return vec2(a ^ b[1], a ^ b[2])
+			return ivec2(a ^ b[1], a ^ b[2])
 		elseif type(b) == "number" then
-			return vec2(a[1] ^ b, a[2] ^ b)
+			return ivec2(a[1] ^ b, a[2] ^ b)
 		else
-			return vec2(a[1] ^ b[1], a[2] ^ b[2])
+			return ivec2(a[1] ^ b[1], a[2] ^ b[2])
 		end
 	end,
 	__eq = function(a, b)
@@ -192,8 +198,8 @@ function ivec2(x, y)
 	end
 end
 
----@diagnostic disable-next-line: undefined-global
-local inner = __inner ~= nil and __inner or {}
----@diagnostic disable-next-line: undefined-global
-__inner = inner
+local inner = _G["__inner"]
+---@type __inner
+local inner = inner ~= nil and inner or {}
+_G["__inner"] = inner
 inner.ivec2_metatable = metatable

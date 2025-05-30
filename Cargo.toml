@@ -4,19 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.97"
-borrow = { git = "https://github.com/Polanas/borrow" }
-clone-macro = "0.1.0"
-dyn-clone = "1.0.19"
-lazy_static = "1.5.0"
-log = "0.4.27"
-macro_rules_attribute = "0.2.0"
-map-macro = "0.3.0"
 from-into-lua = { path = "../from-into-lua/" }
 mlua = { path = "../mlua", features = ["luajit52", "send", "macros"] }
-pollster = "0.4.0"
 lua-error = { path = "../lua-error/" }
-tynm = "0.2.0"
 serde_json = { version = "1.0.140" }
 serde = { version = "1.0.219", features = ["derive"] }
 

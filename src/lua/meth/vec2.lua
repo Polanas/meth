@@ -87,6 +87,12 @@ local methods = {
 			self[2] = self[2] ^ value[2]
 		end
 	end,
+	---@param self meth.Vec2
+	neg = function(self)
+		self[1] = -self[1]
+		self[2] = -self[2]
+	end,
+	type = "Vec2",
 }
 
 ---@type metatable
@@ -193,8 +199,8 @@ function vec2(x, y)
 	end
 end
 
----@diagnostic disable-next-line: undefined-global
-local inner = __inner ~= nil and __inner or {}
----@diagnostic disable-next-line: undefined-global
-__inner = inner
+local inner = _G["__inner"]
+---@type __inner
+local inner = inner ~= nil and inner or {}
+_G["__inner"] = inner
 inner.vec2_metatable = metatable

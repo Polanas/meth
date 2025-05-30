@@ -1,0 +1,9 @@
+---@meta
+---@class __inner
+---@field vec2_metatable metatable
+---@field ivec2_metatable metatable
+---@field vec3_metatable metatable
+---@field ivec3_metatable metatable
+---@field vec4_metatable metatable
+---@field ivec4_metatable metatable
+---@field mat2_metatable metatable

@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::quote;
-use std::{error::Error, fs::File, io::Write};
+use std::{error::Error, fs::File, io::Write, path::Path};
 
 #[derive(Debug, PartialEq, Eq)]
 enum VecType {
@@ -359,9 +359,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(code, _)| code)
             .collect_vec();
         let path = format!("src/vec{vec_size}.rs");
-        // if Path::new(&path).exists() {
-        //     return Ok(());
-        // }
+        if Path::new(&path).exists() {
+            return Ok(());
+        }
         let mut file = File::create(path)?;
         file.write_all(quote! {#(#code)*}.to_string().as_bytes())?;
     }
