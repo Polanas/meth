@@ -20,6 +20,16 @@ local meth = require("src.lua.meth")
 ---@class meth.Vec3
 local methods = {
 	---@param self meth.Vec3
+	---@return meth.IVec3
+	as_ivec3 = function(self)
+		return ivec3(math.floor(self[1]), math.floor(self[2]), math.floor(self[3]))
+	end,
+	---@param self meth.Vec3
+	---@return number, number, number
+	unpack = function(self)
+		return self[1], self[2], self[3]
+	end,
+	---@param self meth.Vec3
 	---@param rhs meth.Vec3
 	---@return meth.Vec3
 	assign_from = function(self, rhs)

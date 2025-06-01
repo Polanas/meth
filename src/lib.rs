@@ -4,6 +4,7 @@ pub mod vec4;
 
 pub mod mat2;
 pub mod mat3;
+pub mod mat4;
 
 pub fn apply(lua: &mut mlua::Lua) -> mlua::Result<()> {
     lua.load(include_str!("lua/meth/vec2.lua")).exec()?;

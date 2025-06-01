@@ -50,6 +50,7 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
         .collect_vec();
 
     let type_ident = vec.vec_type.type_ident();
+    let type_idents = vec![type_ident.clone(); fields.len()];
     let hash = (vec.vec_type != &VecType::F).then_some(quote! {Hash,});
     let neg = (vec.vec_type != &VecType::U).then_some(quote! {
         impl std::ops::Neg for #name {
@@ -136,7 +137,6 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
         },
         vec.fields.len()
     );
-
     let float_fns = (vec.vec_type == &VecType::F).then_some(quote! {
         pub fn floor(self) -> Self {
             Self {
@@ -208,9 +208,8 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
         }
     });
 
-    //TODO: add normalize and other methods, setmetatable
     quote! {
-        #[derive(Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize, #hash)]
+        #[derive(Default, Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize, #hash)]
         pub struct #name {
             #(
                 pub #fields: #type_ident,
@@ -263,6 +262,11 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
             }
             pub fn length_squared(self) -> f32 {
                 #((self.#fields as f32) * (self.#fields as f32))+*
+            }
+            pub fn unpack(self) -> (#(#type_idents),*) {
+                (#(
+                    (self.#fields)
+                ),*)
             }
             #float_fns
             #abs_fn
@@ -400,7 +404,22 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
     }
 }
 
+fn copy_dir(source: impl AsRef<Path>, dest: impl AsRef<Path>) {
+    let (source, dest) = (source.as_ref(), dest.as_ref());
+    if dest.exists() {
+        return;
+    }
+    if !source.exists() {
+        panic!("could not copy from {source:?}: dir does not exist")
+    }
+
+    dircpy::copy_dir(source, dest).unwrap();
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
+    copy_dir("../lopa-test/src/lua/lopa-test/", "src/lua/lopa-test/");
+    std::fs::copy("../lopa-test/src/lua/lopa-test.lua", "src/lua/lopa-test.lua").unwrap();
+
     let fields = [
         vec!["x", "y"],
         vec!["x", "y", "z"],
@@ -422,9 +441,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(code, _)| code)
             .collect_vec();
         let path = format!("src/vec{vec_size}.rs");
-        if Path::new(&path).exists() {
-            return Ok(());
-        }
         let mut file = File::create(path)?;
         file.write_all(quote! {#(#code)*}.to_string().as_bytes())?;
     }

@@ -20,6 +20,16 @@ local meth = require("src.lua.meth")
 ---@class meth.IVec3
 local methods = {
 	---@param self meth.IVec3
+	---@return meth.Vec3
+	as_vec3 = function(self)
+		return vec3(self[1], self[2], self[3])
+	end,
+	---@param self meth.IVec3
+	---@return integer, integer, integer
+	unpack = function(self)
+		return self[1], self[2], self[3]
+	end,
+	---@param self meth.IVec3
 	---@param min meth.IVec3
 	---@param max meth.IVec3
 	---@return meth.IVec3

@@ -9,9 +9,12 @@ mlua = { path = "../mlua", features = ["luajit52", "send", "macros"] }
 lua-error = { path = "../lua-error/" }
 serde_json = { version = "1.0.140" }
 serde = { version = "1.0.219", features = ["derive"] }
+lopa-test = { version = "0.1.0", path = "../lopa-test" }
 
 [build-dependencies]
+dircpy = "0.3.19"
 itertools = "0.14.0"
 proc-macro2 = "1.0.95"
 quote = "1.0.40"
 syn = "2.0.101"
+

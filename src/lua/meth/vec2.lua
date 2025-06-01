@@ -20,6 +20,16 @@ local meth = require("src.lua.meth")
 ---@class meth.Vec2
 local methods = {
 	---@param self meth.Vec2
+	---@return meth.IVec2
+	as_ivec2 = function(self)
+		return ivec2(math.floor(self[1]), math.floor(self[2]))
+	end,
+	---@param self meth.Vec2
+	---@return float, float
+	unpack = function(self)
+		return self[1], self[2]
+	end,
+	---@param self meth.Vec2
 	---@param rhs meth.Vec2
 	---@return meth.Vec2
 	assign_from = function(self, rhs)
@@ -429,3 +439,18 @@ local inner = _G["__inner"]
 local inner = inner ~= nil and inner or {}
 _G["__inner"] = inner
 inner.vec2_metatable = metatable
+
+local test = require("src.lua.lopa-test")
+test.test_module("vec2", {
+	addition = function()
+		test.case("vec + vec", function()
+			test.assert_eq(vec2(1, 1) + vec2(2, 3), vec2(3, 4))
+		end)
+		test.case("vec + num", function()
+			test.assert_eq(vec2(1, 2) + 2, vec2(3, 4))
+		end)
+		test.case("num + vec", function()
+			test.assert_eq(2 + vec2(1, 2), vec2(3, 4))
+		end)
+	end,
+})

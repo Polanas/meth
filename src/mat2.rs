@@ -2,7 +2,7 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 use crate::vec2::Vec2;
 
-#[derive(Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize)]
+#[derive(Default, Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub struct Mat2 {
     pub x_axis: Vec2,
     pub y_axis: Vec2,

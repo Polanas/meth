@@ -129,8 +129,17 @@ local metatable = {
 			return mat2(a * e + b * g, c * e + d * g, a * f + b * h, c * f + d * h)
 		end
 	end,
+	__eq = function(a, b)
+		return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and a[4] == b[4]
+	end,
+	__unm = function(self)
+		return vec4(-self[1], -self[2], -self[3], -self[4])
+	end,
 	__tostring = function(self)
 		return "(x_axis: (" .. self[1] .. ", " .. self[2] .. "); y_axis: (" .. self[3] .. ", " .. self[4] .. "))"
+	end,
+	__len = function()
+		return 4
 	end,
 }
 

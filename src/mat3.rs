@@ -1,10 +1,195 @@
-use crate::vec3::Vec3;
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
-#[derive(Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize)]
+use crate::{vec2::Vec2, vec3::Vec3};
+
+#[derive(Debug, PartialEq, Clone, Copy, serde::Serialize, serde::Deserialize, Default)]
 pub struct Mat3 {
     pub x_axis: Vec3,
     pub y_axis: Vec3,
     pub z_axis: Vec3,
+}
+
+impl Mat3 {
+    pub const fn from_axis(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
+        Self {
+            x_axis,
+            y_axis,
+            z_axis,
+        }
+    }
+    pub const fn splat(value: f32) -> Self {
+        Self::from_axis(Vec3::splat(value), Vec3::splat(value), Vec3::splat(value))
+    }
+    pub fn from_rotation_x(angle: f32) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::from_axis(
+            Vec3::new(1., 0., 0.),
+            Vec3::new(0., cos, -sin),
+            Vec3::new(0., sin, cos),
+        )
+    }
+    pub fn from_rotation_y(angle: f32) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::from_axis(
+            Vec3::new(cos, 0., sin),
+            Vec3::new(0., 1., 0.),
+            Vec3::new(-sin, 0., cos),
+        )
+    }
+    pub fn from_rotation_z(angle: f32) -> Self {
+        let (sin, cos) = angle.sin_cos();
+        Self::from_axis(
+            Vec3::new(cos, -sin, 0.),
+            Vec3::new(sin, cos, 0.),
+            Vec3::new(0., 0., 1.),
+        )
+    }
+    pub fn from_translation(position: Vec2) -> Self {
+        Self::from_axis(
+            Vec3::new(1., 0., position.x),
+            Vec3::new(0., 1., position.y),
+            Vec3::new(0., 0., 1.),
+        )
+    }
+    pub fn from_scale(scale: Vec2) -> Self {
+        Self::from_axis(
+            Vec3::new(scale.x, 0., 0.),
+            Vec3::new(0., scale.y, 0.),
+            Vec3::new(0., 0., 1.),
+        )
+    }
+}
+
+impl Add for Mat3 {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            x_axis: self.x_axis + rhs.x_axis,
+            y_axis: self.y_axis + rhs.y_axis,
+            z_axis: self.z_axis + rhs.z_axis,
+        }
+    }
+}
+
+impl AddAssign<Mat3> for Mat3 {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x_axis += rhs.x_axis;
+        self.y_axis += rhs.y_axis;
+        self.z_axis += rhs.z_axis;
+    }
+}
+
+impl Add<f32> for Mat3 {
+    type Output = Self;
+
+    fn add(self, rhs: f32) -> Self::Output {
+        Self {
+            x_axis: self.x_axis + rhs,
+            y_axis: self.y_axis + rhs,
+            z_axis: self.z_axis + rhs,
+        }
+    }
+}
+
+impl AddAssign<f32> for Mat3 {
+    fn add_assign(&mut self, rhs: f32) {
+        self.x_axis += rhs;
+        self.y_axis += rhs;
+        self.z_axis += rhs;
+    }
+}
+
+impl Sub for Mat3 {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x_axis: self.x_axis - rhs.x_axis,
+            y_axis: self.y_axis - rhs.y_axis,
+            z_axis: self.z_axis - rhs.z_axis,
+        }
+    }
+}
+
+impl SubAssign<Mat3> for Mat3 {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.x_axis -= rhs.x_axis;
+        self.y_axis -= rhs.y_axis;
+        self.z_axis -= rhs.z_axis;
+    }
+}
+
+impl Sub<f32> for Mat3 {
+    type Output = Self;
+
+    fn sub(self, rhs: f32) -> Self::Output {
+        Self {
+            x_axis: self.x_axis - rhs,
+            y_axis: self.y_axis - rhs,
+            z_axis: self.z_axis - rhs,
+        }
+    }
+}
+
+impl SubAssign<f32> for Mat3 {
+    fn sub_assign(&mut self, rhs: f32) {
+        self.x_axis -= rhs;
+        self.y_axis -= rhs;
+        self.z_axis -= rhs;
+    }
+}
+
+impl Mul<f32> for Mat3 {
+    type Output = Self;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Self {
+            x_axis: self.x_axis * rhs,
+            y_axis: self.y_axis * rhs,
+            z_axis: self.z_axis * rhs,
+        }
+    }
+}
+
+impl MulAssign<f32> for Mat3 {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x_axis *= rhs;
+        self.y_axis *= rhs;
+        self.z_axis *= rhs;
+    }
+}
+
+impl Mul for Mat3 {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        let (a, d, g) = self.x_axis.unpack();
+        let (b, e, h) = self.y_axis.unpack();
+        let (c, f, i) = self.z_axis.unpack();
+
+        let (j, m, p) = rhs.x_axis.unpack();
+        let (k, n, q) = rhs.y_axis.unpack();
+        let (l, o, r) = rhs.z_axis.unpack();
+        dbg!(d, j, e, m, f, p);
+        Self {
+            x_axis: Vec3 {
+                x: a * j + b * m + c * p,
+                y: d * j + e * m + f * p,
+                z: g * j + h * m + i * p,
+            },
+            y_axis: Vec3 {
+                x: a * k + b * n + c * q,
+                y: d * k + e * n + f * q,
+                z: g * k + h * n + i * q,
+            },
+            z_axis: Vec3 {
+                x: a * l + b * o + c * r,
+                y: d * l + e * o + f * r,
+                z: g * l + h * o + i * r,
+            },
+        }
+    }
 }
 
 impl mlua::FromLua for Mat3 {
@@ -71,7 +256,7 @@ impl mlua::IntoLua for Mat3 {
         mlua::ErrorContext::with_context(table.raw_set(2i32, self.x_axis.y), |_| {
             "could not set `Mat3`s field `x_axis.y` of type `u32`"
         })?;
-        mlua::ErrorContext::with_context(table.raw_set(3i32, self.x_axis.y), |_| {
+        mlua::ErrorContext::with_context(table.raw_set(3i32, self.x_axis.z), |_| {
             "could not set `Mat3`s field `x_axis.z` of type `u32`"
         })?;
 
@@ -81,7 +266,7 @@ impl mlua::IntoLua for Mat3 {
         mlua::ErrorContext::with_context(table.raw_set(5i32, self.y_axis.y), |_| {
             "could not set `Mat3`s field `y_axis.y` of type `u32`"
         })?;
-        mlua::ErrorContext::with_context(table.raw_set(6i32, self.y_axis.y), |_| {
+        mlua::ErrorContext::with_context(table.raw_set(6i32, self.y_axis.z), |_| {
             "could not set `Mat3`s field `y_axis.z` of type `u32`"
         })?;
 
@@ -91,9 +276,38 @@ impl mlua::IntoLua for Mat3 {
         mlua::ErrorContext::with_context(table.raw_set(8i32, self.z_axis.y), |_| {
             "could not set `Mat3`s field `z_axis.y` of type `u32`"
         })?;
-        mlua::ErrorContext::with_context(table.raw_set(9i32, self.z_axis.y), |_| {
+        mlua::ErrorContext::with_context(table.raw_set(9i32, self.z_axis.z), |_| {
             "could not set `Mat3`s field `z_axis.z` of type `u32`"
         })?;
         Ok(mlua::Value::Table(table))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::vec3::Vec3;
+
+    use super::Mat3;
+
+    #[test]
+    fn multiplication() {
+        let m1 = Mat3::from_axis(
+            Vec3::new(1., 4., 7.),
+            Vec3::new(2., 5., 8.),
+            Vec3::new(3., 6., 9.),
+        );
+        let m2 = Mat3::from_axis(
+            Vec3::new(9., 6., 3.),
+            Vec3::new(8., 5., 2.),
+            Vec3::new(7., 4., 1.),
+        );
+        assert_eq!(
+            m1 * m2,
+            Mat3::from_axis(
+                Vec3::new(30.,84.,138.),
+                Vec3::new(24.,69.,114.),
+                Vec3::new(18.,54.,90.),
+            )
+        )
     }
 }
