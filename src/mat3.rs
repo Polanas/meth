@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 use crate::{vec2::Vec2, vec3::Vec3};
 
@@ -171,7 +171,6 @@ impl Mul for Mat3 {
         let (j, m, p) = rhs.x_axis.unpack();
         let (k, n, q) = rhs.y_axis.unpack();
         let (l, o, r) = rhs.z_axis.unpack();
-        dbg!(d, j, e, m, f, p);
         Self {
             x_axis: Vec3 {
                 x: a * j + b * m + c * p,
@@ -188,6 +187,67 @@ impl Mul for Mat3 {
                 y: d * l + e * o + f * r,
                 z: g * l + h * o + i * r,
             },
+        }
+    }
+}
+
+impl MulAssign for Mat3 {
+    fn mul_assign(&mut self, rhs: Self) {
+        let (a, d, g) = self.x_axis.unpack();
+        let (b, e, h) = self.y_axis.unpack();
+        let (c, f, i) = self.z_axis.unpack();
+
+        let (j, m, p) = rhs.x_axis.unpack();
+        let (k, n, q) = rhs.y_axis.unpack();
+        let (l, o, r) = rhs.z_axis.unpack();
+
+        self.x_axis.x = a * j + b * m + c * p;
+        self.x_axis.y = d * j + e * m + f * p;
+        self.x_axis.z = g * j + h * m + i * p;
+
+        self.y_axis.x = a * k + b * n + c * q;
+        self.y_axis.y = d * k + e * n + f * q;
+        self.y_axis.z = g * k + h * n + i * q;
+
+        self.z_axis.x = a * l + b * o + c * r;
+        self.z_axis.y = d * l + e * o + f * r;
+        self.z_axis.z = g * l + h * o + i * r;
+    }
+}
+
+impl Div<f32> for Mat3 {
+    type Output = Self;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        Self {
+            x_axis: self.x_axis / rhs,
+            y_axis: self.y_axis / rhs,
+            z_axis: self.z_axis / rhs,
+        }
+    }
+}
+
+impl DivAssign<f32> for Mat3 {
+    fn div_assign(&mut self, rhs: f32) {
+        self.x_axis /= rhs;
+        self.y_axis /= rhs;
+        self.z_axis /= rhs;
+    }
+}
+
+impl Mul<Vec3> for Mat3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        let (x1, y1, z1) = self.x_axis.unpack();
+        let (x2, y2, z2) = self.y_axis.unpack();
+        let (x3, y3, z3) = self.z_axis.unpack();
+        let (a1, a2, a3) = rhs.unpack();
+
+        Vec3 {
+            x: a1 * x1 + a2 * x2 + a3 * x3,
+            y: a1 * y1 + a2 * y2 + a3 * y3,
+            z: a1 * z1 + a2 * z2 + a3 * z3,
         }
     }
 }
@@ -288,9 +348,18 @@ mod test {
     use crate::vec3::Vec3;
 
     use super::Mat3;
-
     #[test]
-    fn multiplication() {
+    fn matrix_x_vecor() {
+        let m1 = Mat3::from_axis(
+            Vec3::new(1., 4., 7.),
+            Vec3::new(2., 5., 8.),
+            Vec3::new(3., 6., 9.),
+        );
+        let vec = Vec3::new(1., 2., 3.);
+        assert_eq!(m1*vec, Vec3::new(14.,32.,50.));
+    }
+    #[test]
+    fn matrix_x_matrix() {
         let m1 = Mat3::from_axis(
             Vec3::new(1., 4., 7.),
             Vec3::new(2., 5., 8.),
@@ -304,9 +373,9 @@ mod test {
         assert_eq!(
             m1 * m2,
             Mat3::from_axis(
-                Vec3::new(30.,84.,138.),
-                Vec3::new(24.,69.,114.),
-                Vec3::new(18.,54.,90.),
+                Vec3::new(30., 84., 138.),
+                Vec3::new(24., 69., 114.),
+                Vec3::new(18., 54., 90.),
             )
         )
     }

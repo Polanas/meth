@@ -10,6 +10,7 @@
 ---@operator mul(meth.Mat2): meth.Mat2
 ---@operator mul(meth.Vec2): meth.Vec2
 ---@operator mul(number): meth.Mat2
+---@operator div(number): meth.Mat2
 
 ---@class meth.Mat2
 local methods = {
@@ -82,7 +83,6 @@ local metatable = {
 			self[4] = value
 		end
 	end,
-	---@param self meth.Vec2
 	__index = function(self, value)
 		if value == "x1" then
 			return self[1]
@@ -129,14 +129,21 @@ local metatable = {
 			return mat2(a * e + b * g, c * e + d * g, a * f + b * h, c * f + d * h)
 		end
 	end,
+	__div = function(a, b)
+		if type(a) == "number" then
+			return mat2(a / b[1], a / b[2], a / b[3], a / b[4])
+		elseif type(b) == "number" then
+			return mat2(a[1] / b, a[2] / b, a[3] / b, a[4] / b)
+		end
+	end,
 	__eq = function(a, b)
 		return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and a[4] == b[4]
 	end,
 	__unm = function(self)
 		return vec4(-self[1], -self[2], -self[3], -self[4])
 	end,
-	__tostring = function(self)
-		return "(x_axis: (" .. self[1] .. ", " .. self[2] .. "); y_axis: (" .. self[3] .. ", " .. self[4] .. "))"
+	__tostring = function(s)
+		return string.format("(%s, %s,\n %s, %s)", s[1], s[2], s[3], s[4])
 	end,
 	__len = function()
 		return 4
@@ -174,7 +181,7 @@ local inner = _G["__inner"]
 ---@type __inner
 local inner = inner ~= nil and inner or {}
 _G["__inner"] = inner
-inner.mat2_metatable = metatable
+inner.meth.mat2_metatable = metatable
 
 ---@class meth.Mat2.definitions
 local Mat2 = {

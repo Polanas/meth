@@ -1,5 +1,4 @@
----@meta
----@class __inner
+---@class (exact) __inner.meth
 ---@field vec2_metatable metatable
 ---@field ivec2_metatable metatable
 ---@field vec3_metatable metatable
@@ -7,3 +6,9 @@
 ---@field vec4_metatable metatable
 ---@field ivec4_metatable metatable
 ---@field mat2_metatable metatable
+---@field mat3_metatable metatable
+---@field mat4_metatable metatable
+
+---@meta
+---@class (exact) __inner
+---@field meth __inner.meth

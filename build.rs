@@ -238,7 +238,9 @@ fn gen_vec(vec: GenericVec) -> TokenStream {
                     .globals()
                     .get::<Option<mlua::Table>>("__inner")?
                     .ok_or_else(|| lua_error::lua_error!("could not get __inner"))?;
-                let metatable = inner_table
+                let meth_table = mlua::ErrorContext::with_context(
+                    inner_table.get::<mlua::Table>("meth"), |_| "could not get __inner.meth table")?;
+                let metatable = meth_table
                     .get::<Option<mlua::Table>>(#metatable_name)?
                     .ok_or_else(|| lua_error::lua_error!("could not get metatable {}", #metatable_name))?;
                 table.set_metatable(Some(metatable));
@@ -418,7 +420,11 @@ fn copy_dir(source: impl AsRef<Path>, dest: impl AsRef<Path>) {
 
 fn main() -> Result<(), Box<dyn Error>> {
     copy_dir("../lopa-test/src/lua/lopa-test/", "src/lua/lopa-test/");
-    std::fs::copy("../lopa-test/src/lua/lopa-test.lua", "src/lua/lopa-test.lua").unwrap();
+    std::fs::copy(
+        "../lopa-test/src/lua/lopa-test.lua",
+        "src/lua/lopa-test.lua",
+    )
+    .unwrap();
 
     let fields = [
         vec!["x", "y"],
@@ -441,6 +447,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(code, _)| code)
             .collect_vec();
         let path = format!("src/vec{vec_size}.rs");
+        // if Path::new(&path).exists() {
+        //     return Ok(());
+        // }
         let mut file = File::create(path)?;
         file.write_all(quote! {#(#code)*}.to_string().as_bytes())?;
     }

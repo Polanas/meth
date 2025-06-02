@@ -438,7 +438,7 @@ local inner = _G["__inner"]
 ---@type __inner
 local inner = inner ~= nil and inner or {}
 _G["__inner"] = inner
-inner.vec2_metatable = metatable
+inner.meth.vec2_metatable = metatable
 
 local test = require("src.lua.lopa-test")
 test.test_module("vec2", {

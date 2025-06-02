@@ -227,6 +227,8 @@ local M = {
 				print(test.error)
 				print()
 			end
+		end
+		if #tests > 0 then
 			print()
 		end
 

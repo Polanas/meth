@@ -296,4 +296,4 @@ local inner = _G["__inner"]
 ---@type __inner
 local inner = inner ~= nil and inner or {}
 _G["__inner"] = inner
-inner.ivec3_metatable = metatable
+inner.meth.ivec3_metatable = metatable
