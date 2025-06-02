@@ -222,16 +222,16 @@ impl mlua::IntoLua for Mat2 {
             .ok_or_else(|| lua_error::lua_error!("could not get metatable {}", "mat2_metatable"))?;
         table.set_metatable(Some(metatable));
         mlua::ErrorContext::with_context(table.raw_set(1i32, self.x_axis.x), |_| {
-            "could not set `Mat2`s field `x_axis.x` of type `u32`"
+            "could not set `Mat2`s field `x_axis.x` of type `f32`"
         })?;
         mlua::ErrorContext::with_context(table.raw_set(2i32, self.x_axis.y), |_| {
-            "could not set `Mat2`s field `x_axis.y` of type `u32`"
+            "could not set `Mat2`s field `x_axis.y` of type `f32`"
         })?;
         mlua::ErrorContext::with_context(table.raw_set(3i32, self.y_axis.x), |_| {
-            "could not set `Mat2`s field `y_axis.x` of type `u32`"
+            "could not set `Mat2`s field `y_axis.x` of type `f32`"
         })?;
         mlua::ErrorContext::with_context(table.raw_set(4i32, self.y_axis.y), |_| {
-            "could not set `Mat2`s field `y_axis.y` of type `u32`"
+            "could not set `Mat2`s field `y_axis.y` of type `f32`"
         })?;
         Ok(mlua::Value::Table(table))
     }
