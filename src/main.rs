@@ -3,6 +3,8 @@ use mlua::Lua;
 use std::env;
 
 fn main() -> mlua::Result<()> {
+    //TODO: check windows support
+    unsafe { env::set_var("LUA_PATH", "?.lua;?/mod.lua") };
     let mut lua = Lua::new();
     apply(&mut lua).unwrap();
 

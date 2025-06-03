@@ -442,6 +442,20 @@ inner.meth.vec2_metatable = metatable
 
 local test = require("src.lua.lopa-test")
 test.test_module("vec2", {
+	gc = function()
+		do
+			---@type metatable
+			local metatable = {
+				__gc = function()
+					print("collected!")
+				end,
+			}
+			local x = {}
+			setmetatable(x, metatable)
+		end
+    collectgarbage("collect")
+    collectgarbage("collect")
+	end,
 	addition = function()
 		test.case("vec + vec", function()
 			test.assert_eq(vec2(1, 1) + vec2(2, 3), vec2(3, 4))

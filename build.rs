@@ -420,11 +420,6 @@ fn copy_dir(source: impl AsRef<Path>, dest: impl AsRef<Path>) {
 
 fn main() -> Result<(), Box<dyn Error>> {
     copy_dir("../lopa-test/src/lua/lopa-test/", "src/lua/lopa-test/");
-    std::fs::copy(
-        "../lopa-test/src/lua/lopa-test.lua",
-        "src/lua/lopa-test.lua",
-    )
-    .unwrap();
 
     let fields = [
         vec!["x", "y"],
